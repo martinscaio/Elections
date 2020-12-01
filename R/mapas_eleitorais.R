@@ -8,6 +8,7 @@ library(ggplot2)
 library(sf)
 library(rgdal)
 library(janitor)
+
 library(maptools)
 library(raster)
 library(electionsBR)
