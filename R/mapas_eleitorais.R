@@ -1,4 +1,9 @@
-#ELABORAÇÃO DOS MAPAS ELEITORAIS POR ZONAS ELEITORAIS
+
+# TODOS OS DADOS FORAM BAIXADOS DO REPOSITÓRIO DE DADOS ELEITORAIS DO TSE. PODE SER ACESSADO AQUI: "https://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais-1/repositorio-de-dados-eleitorais"
+
+# ELABORAÇÃO DOS MAPAS ELEITORAIS POR ZONAS ELEITORAIS
+
+# NO RESULTADO FINAL ACABOU QUE NÃO USEI TODOS OS PACOTES CARREGADOS
 
 #BIBLIOTECAS
 library(gridExtra)
@@ -8,13 +13,14 @@ library(ggplot2)
 library(sf)
 library(rgdal)
 library(janitor)
-
 library(maptools)
 library(raster)
 library(electionsBR)
 library(grid)
 library(magick)
 
+
+# 1 TURNO SÃO PAULO - PREFEITO
 
 # IMPORTAÇÃO E TRATAMENTO DOS DADOS
 
@@ -233,32 +239,7 @@ sp_prefeito %>% filter(ano_eleicao == "2008" & sg_partido == "PT") %>%
   labs(caption = "AUTOR: CAIO MARTINS")
 
 
-
-
-
-
-
-teeeeste<- sp_prefeito %>% filter(ano_eleicao == "2020" & nr_zona == "371") %>%
-  mutate(percentual = (qt_votos_nominais/sum(qt_votos_nominais)*100))
-
-sp_prefeito %>% filter(ano_eleicao == "2020" & nr_zona == "371" & sg_partido == "PT")
-
-sum(teeeeste$percentual)
-
-aaaaah <- teeeeste %>% dplyr::select(nm_urna_candidato, sg_partido, percentual, qt_votos_nominais)
-
-vaaai <- aaaaah %>% filter(sg_partido == "PT") %>%
-  group_by(sg_partido, percentual) %>%
-  mutate(sum(aaaaah$percentual))
-
-sum(vaaai$n)
-
-grid.arran
-
-PT_08 + PT_16
-
-grid.arrange(pt_16, pt_20, nrow = 2)
-
+# VOTOS VALIDOS
 
 votos_validos <- sp_prefeito %>% filter(nr_turno == "1") %>%
   group_by(ano_eleicao, sg_partido) %>%
@@ -288,17 +269,7 @@ votos_validos %>% filter(sg_partido == "PSDB") %>%
 
 
 
-
-img1 <- image_read("C:\\Users\\mcaio\\Desktop\\Nova pasta\\pt_08_prefeito.png")
-img2 <- image_read("C:\\Users\\mcaio\\Desktop\\Nova pasta\\pt_12_prefeito.png")
-img3 <- image_read("C:\\Users\\mcaio\\Desktop\\Nova pasta\\pt_16_prefeito.png")
-
-frames <- image_morph(c(img1, img2, img3), frames = 25)
-teste <- image_animate(frames, fps = 10)
-
-teste
-
-#partido vencedor por zona eleitoral
+# PARTIDO VENCEDOR POR ZONA ELEITORAL
 
 partido_vencedor <- sp_prefeito %>% group_by(ano_eleicao, nr_zona) %>%
   slice(which.max(qt_votos_nominais)) %>%
@@ -329,7 +300,7 @@ partido_vencedor %>% filter(ano_eleicao == "2020") %>%
 
 
 
-# teste gifs
+# teste gifs (INCOMPLETO)
 
 img1 <- image_read("....\\pt_08_prefeito.png")
 img2 <- image_read("....\\pt_12_prefeito.png")
