@@ -1,7 +1,9 @@
 
-# TODOS OS DADOS FORAM BAIXADOS DO REPOSITÓRIO DE DADOS ELEITORAIS DO TSE. PODE SER ACESSADO AQUI: "https://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais-1/repositorio-de-dados-eleitorais"
+# TODOS OS DADOS FORAM BAIXADOS DO REPOSITÓRIO DE DADOS ELEITORAIS DO TSE.
 
-# ELABORAÇÃO DOS MAPAS ELEITORAIS POR ZONAS ELEITORAIS
+# PODEM SER ACESSADO AQUI: "https://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais-1/repositorio-de-dados-eleitorais"
+
+# ELABORAÇÃO DOS MAPAS ELEITORAIS POR ZONAS ELEITORAIS EM SÃO PAULO
 
 # NO RESULTADO FINAL ACABOU QUE NÃO USEI TODOS OS PACOTES CARREGADOS
 
@@ -111,13 +113,17 @@ sp_08 <- read.csv("C:\\Users\\mcaio\\Desktop\\Nova pasta\\votacao_candidato_munz
   mutate(perc = qt_votos_nominais/sum(qt_votos_nominais)*100)
 
 
+# JUNTANDO OS DADOS
+
+
 sp_prefeito <- full_join(sp_08, sp_12)
 
 sp_prefeito <- full_join(sp_prefeito, sp_16)
 
 sp_prefeito <- full_join(sp_prefeito, sp_20)
 
-# SHAPE DO MU SP DAS ZONA ELEITORAIS
+
+# SHAPE DO MUNICIPIO DE SP - ZONA ELEITORAIS
 
 zonas_elec_sp <- st_read("C:\\Users\\mcaio\\Desktop\\Nova pasta\\ZONAS_FINAL.shp") %>%
   dplyr::rename(nr_zona = ZEFINAL)
@@ -125,7 +131,12 @@ zonas_elec_sp <- st_read("C:\\Users\\mcaio\\Desktop\\Nova pasta\\ZONAS_FINAL.shp
 sp_prefeito <- left_join(sp_prefeito, zonas_elec_sp)
 
 
+# GRAFICOS DO PRIMEIRO TURNO DA ELEIÇÃO PARA PREFEITURA EM 2020 NA CIDADE DE SP
+
+
 # GRAFICO PSDB 2020
+
+
 sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PSDB") %>%
   ggplot(aes(geometry = geometry, fill = perc))+
   geom_sf()+
@@ -145,6 +156,8 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PSDB") %>%
 
 
 #GRAFICO PT 2020
+
+
 sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PT") %>%
   ggplot(aes(geometry = geometry, fill = perc))+
   geom_sf()+
@@ -167,7 +180,11 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PT") %>%
   annotate("text", x=-46.4, y=-23.605, label="CIDADE TIRADENTES",
            size=3.45, family = "ITCOfficinaSans LT Book", colour = "Black")
 
+
+
 # GRAFICO PT 2016
+
+
 sp_prefeito %>% filter(ano_eleicao == "2016" & sg_partido == "PT") %>%
   ggplot(aes(geometry = geometry, fill = perc))+
   geom_sf()+
@@ -190,7 +207,11 @@ sp_prefeito %>% filter(ano_eleicao == "2016" & sg_partido == "PT") %>%
   annotate("text", x=-46.4, y=-23.605, label="CIDADE TIRADENTES",
            size=3.45, family = "ITCOfficinaSans LT Book", colour = "Black")
 
+
+
 # GRAFICO PT 2012
+
+
 sp_prefeito %>% filter(ano_eleicao == "2012" & sg_partido == "PT") %>%
   ggplot(aes(geometry = geometry, fill = perc))+
   geom_sf()+
@@ -213,7 +234,11 @@ sp_prefeito %>% filter(ano_eleicao == "2012" & sg_partido == "PT") %>%
   annotate("text", x=-46.4, y=-23.605, label="CIDADE TIRADENTES",
            size=3.45, family = "ITCOfficinaSans LT Book", colour = "Black")
 
-#grafico PT 2008
+
+
+
+# GRAFICO PT 2008
+
 sp_prefeito %>% filter(ano_eleicao == "2008" & sg_partido == "PT") %>%
   ggplot(aes(geometry = geometry, fill = perc))+
   geom_sf()+
@@ -247,7 +272,10 @@ votos_validos <- sp_prefeito %>% filter(nr_turno == "1") %>%
   mutate(percentual_valido = total_votos_validos/sum(total_votos_validos)*100) %>%
   mutate(percentual_valido = round(percentual_valido, digits = 2))
 
+
 # GRAFICO VOTOS VALIDOS PT
+
+
 votos_validos %>% filter(sg_partido == "PT") %>%
   ggplot(aes(x = factor(ano_eleicao), percentual_valido, group = 1))+
   geom_point()+
@@ -257,7 +285,11 @@ votos_validos %>% filter(sg_partido == "PT") %>%
   theme_economist()+
   ggtitle("Percentual de Votos Válidos do PT nas Eleições de Prefeito da Cidade de São Paulo")
 
+
+
 #GRAFICO PSDB
+
+
 votos_validos %>% filter(sg_partido == "PSDB") %>%
   ggplot(aes(x = factor(ano_eleicao), percentual_valido, group = 1))+
   geom_point()+
@@ -286,7 +318,10 @@ partido_vencedor <- sp_prefeito %>% group_by(ano_eleicao, nr_zona) %>%
                 FIRST_NOME) %>%
   mutate(partido_vencedor = sg_partido)
 
+
 #mapa do partido vencedor por zona eleitoral
+
+
 partido_vencedor %>% filter(ano_eleicao == "2020") %>%
   ggplot(aes(geometry = geometry, fill = partido_vencedor)) +
   geom_sf() +
@@ -299,7 +334,7 @@ partido_vencedor %>% filter(ano_eleicao == "2020") %>%
   ggtitle("Partidos que ganharam as zonas eleitorais")
 
 
-
+#______________________________________________________________________________________________
 # teste gifs (INCOMPLETO)
 
 img1 <- image_read("....\\pt_08_prefeito.png")
