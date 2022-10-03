@@ -29,22 +29,28 @@ library(purrr)
 
 # Dados
 
-sp_20 <- read.csv("C:\\Users\\mcaio\\Desktop\\Nova pasta\\votacao_candidato_munzona_2020_SP.csv", sep = ";")
-
-
-sp_16 <- read.csv("C:\\Users\\mcaio\\Desktop\\Nova pasta\\votacao_candidato_munzona_2016_SP.csv", sep = ";")
-
-
-
-sp_12 <- read.csv("C:\\Users\\mcaio\\Desktop\\Nova pasta\\votacao_candidato_munzona_2012_SP.txt",
+sp_20 <- read.csv("C:\\Users\\Caio\\Desktop\\Eleições\\Dados Eleitorais\\votacao_candidato_munzona_2020_SP.csv",
                   sep = ";",
-                  header = FALSE)
+                  encoding = 'latin1')
 
 
-
-sp_08 <- read.csv("C:\\Users\\mcaio\\Desktop\\Nova pasta\\votacao_candidato_munzona_2008_SP.txt",
+sp_16 <- read.csv("C:\\Users\\Caio\\Desktop\\Eleições\\Dados Eleitorais\\votacao_candidato_munzona_2016_SP.csv",
                   sep = ";",
-                  header = FALSE)
+                  encoding = 'latin1')
+
+
+
+sp_12 <- read.csv("C:\\Users\\Caio\\Desktop\\Eleições\\Dados Eleitorais\\votacao_candidato_munzona_2012_SP.txt",
+                  sep = ";",
+                  header = FALSE,
+                  encoding = 'latin1')
+
+
+
+sp_08 <- read.csv("C:\\Users\\Caio\\Desktop\\Eleições\\Dados Eleitorais\\votacao_candidato_munzona_2008_SP.txt",
+                  sep = ";",
+                  header = FALSE,
+                  encoding = 'latin1')
 
 
 
@@ -109,6 +115,10 @@ base1 <- list(sp_20, sp_16) %>%
   reduce(full_join)
 
 
+
+
+
+
 base2 <- list(sp_12, sp_08) %>%
   map(limpa_dados2) %>%
   reduce(full_join)
@@ -121,7 +131,7 @@ sp_prefeito <- full_join(base1, base2)
 
 #### SHAPE DO MUNICIPIO DE SP - ZONA ELEITORAIS ####
 
-zonas_elec_sp <- st_read("C:\\Users\\mcaio\\Desktop\\Nova pasta\\ZONAS_FINAL.shp") %>%
+zonas_elec_sp <- st_read("C:\\Users\\Caio\\Desktop\\Eleições\\shape-zonas eleitorais sp\\ZONAS_FINAL.shp") %>%
   dplyr::rename(nr_zona = ZEFINAL)
 
 sp_prefeito <- left_join(sp_prefeito, zonas_elec_sp)
@@ -139,10 +149,14 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PSDB" & nr_turno =
   theme_minimal()+
   theme(axis.title = element_blank(),
         panel.grid = element_blank(),
+        rect = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "(%) Votos por Zona Eleitoral ", reverse = TRUE))+
   scale_fill_distiller(palette = "Blues", direction = 1)+
-  ggtitle("(%) de Votação do PSDB por Zona Eleitoral na Eleição pra Prefeito de 2020")+
+  ggtitle("(%) de Votação do PSDB por Zona Eleitoral na Eleição pra Prefeito de 2020 na Cidade de SP")+
   annotate("text", x=-46.77, y=-23.63, label="Campo Limpo",
            size=3.45, family = "ITCOfficinaSans LT Book") +
   annotate("text", x=-46.72, y=-23.595, label="Butantã",
@@ -161,12 +175,15 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PT" & nr_turno == 
   geom_sf()+
   theme_minimal()+
   theme(axis.title = element_blank(),
+        rect = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
         panel.grid = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "(%) VOTOS POR ZONA ELEITORAL ",
                              label.position = "left", reverse = TRUE))+
   scale_fill_distiller(palette = "Reds", direction = 1)+
-  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição pra Prefeito de 2020")+
+  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição pra Prefeito de 2020 na Cidade de SP")+
   annotate("text", x=-46.77, y=-23.63, label="CAMPO LIMPO",
            size=3.45, family = "ITCOfficinaSans LT Book") +
   annotate("text", x=-46.72, y=-23.595, label="BUTANTÃ",
@@ -174,9 +191,38 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PT" & nr_turno == 
   annotate("text", x=-46.7, y=-23.85, label="PARELHEIROS",
            size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")+
   annotate("text", x=-46.67, y=-23.746, label="GRAJAÚ",
+           size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")
+
+
+
+
+
+#GRAFICO PSOL 2020
+
+
+sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PSOL" & nr_turno == "1") %>%
+  ggplot(aes(geometry = geometry, fill = percentual))+
+  geom_sf()+
+  theme_minimal()+
+  theme(axis.title = element_blank(),
+        rect = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        plot.title.position = "plot")+
+  guides(fill = guide_legend(title = "(%) VOTOS POR ZONA ELEITORAL ",
+                             label.position = "left", reverse = TRUE))+
+  scale_fill_distiller(palette = "GR", direction = 1)+
+  ggtitle("(%) de Votação do PSOL por Zona Eleitoral na Eleição pra Prefeito de 2020 na Cidade de SP")+
+  annotate("text", x=-46.77, y=-23.63, label="CAMPO LIMPO",
+           size=3.45, family = "ITCOfficinaSans LT Book") +
+  annotate("text", x=-46.72, y=-23.595, label="BUTANTÃ",
+           size=3.45, family = "ITCOfficinaSans LT Book")+
+  annotate("text", x=-46.7, y=-23.85, label="PARELHEIROS",
            size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")+
-  annotate("text", x=-46.4, y=-23.605, label="CIDADE TIRADENTES",
-           size=3.45, family = "ITCOfficinaSans LT Book", colour = "Black")
+  annotate("text", x=-46.67, y=-23.746, label="GRAJAÚ",
+           size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")
+
 
 
 
@@ -189,11 +235,14 @@ sp_prefeito %>% filter(ano_eleicao == "2016" & sg_partido == "PT" & nr_turno == 
   theme_minimal()+
   theme(axis.title = element_blank(),
         panel.grid = element_blank(),
+        rect = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "(%) VOTOS POR ZONA ELEITORAL ",
                              label.position = "left", reverse = TRUE))+
   scale_fill_distiller(palette = "Reds", direction = 1)+
-  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição pra Prefeito de 2016")+
+  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição pra Prefeito de 2016 na Cidade de SP")+
   annotate("text", x=-46.77, y=-23.63, label="CAMPO LIMPO",
            size=3.45, family = "ITCOfficinaSans LT Book") +
   annotate("text", x=-46.72, y=-23.595, label="BUTANTÃ",
@@ -215,12 +264,15 @@ sp_prefeito %>% filter(ano_eleicao == "2012" & sg_partido == "PT" & nr_turno == 
   geom_sf()+
   theme_minimal()+
   theme(axis.title = element_blank(),
+        rect = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
         panel.grid = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "(%) VOTOS POR ZONA ELEITORAL ",
                              label.position = "left", reverse = TRUE))+
   scale_fill_distiller(palette = "Reds", direction = 1)+
-  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição pra Prefeito de 2012")+
+  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição pra Prefeito de 2012 na cidade de SP")+
   annotate("text", x=-46.77, y=-23.63, label="CAMPO LIMPO",
            size=3.45, family = "ITCOfficinaSans LT Book") +
   annotate("text", x=-46.72, y=-23.595, label="BUTANTÃ",
@@ -243,12 +295,15 @@ sp_prefeito %>% filter(ano_eleicao == "2008" & sg_partido == "PT" & nr_turno == 
   theme_minimal()+
   theme(axis.title = element_blank(),
         panel.grid = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        rect = element_blank(),
         plot.title.position = "plot",
         plot.caption = element_text(vjust = 48.5))+
   guides(fill = guide_legend(title = "(%) VOTOS POR ZONA ELEITORAL ",
                              label.position = "left", reverse = TRUE))+
   scale_fill_distiller(palette = "Reds", direction = 1)+
-  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição Pra Prefeito de 2008")+
+  ggtitle("(%) de Votação do PT por Zona Eleitoral na Eleição Pra Prefeito de 2008 na Cidade de SP")+
   annotate("text", x=-46.77, y=-23.63, label="CAMPO LIMPO",
            size=3.45, family = "ITCOfficinaSans LT Book") +
   annotate("text", x=-46.72, y=-23.595, label="BUTANTÃ",
@@ -258,8 +313,8 @@ sp_prefeito %>% filter(ano_eleicao == "2008" & sg_partido == "PT" & nr_turno == 
   annotate("text", x=-46.67, y=-23.746, label="GRAJAÚ",
            size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")+
   annotate("text", x=-46.4, y=-23.605, label="CIDADE TIRADENTES",
-           size=3.45, family = "ITCOfficinaSans LT Book", colour = "Black")+
-  labs(caption = "AUTOR: CAIO MARTINS")
+           size=3.45, family = "ITCOfficinaSans LT Book", colour = "Black")
+
 
 
 #### VOTOS VALIDOS ####
@@ -339,8 +394,8 @@ partido_vencedor %>% filter(ano_eleicao == "2020") %>%
         panel.grid = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "Partido", reverse = FALSE))+
-  scale_fill_manual(values = c("#009999","#ff6633", "#0040ff", "#e60000"))+
-  ggtitle("Partidos que ganharam as zonas eleitorais")
+  scale_fill_manual(values = c("#098AEF","#F0F01C", "#0040ff", "#e60000"))+
+  ggtitle("Partidos vencedores em cada zona eleitoral no 2º turno de 2020")
 
 #_________________________________________________________________________________________________________________
 
@@ -360,10 +415,14 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PSDB" & nr_turno =
   theme_minimal()+
   theme(axis.title = element_blank(),
         panel.grid = element_blank(),
+        rect = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "(%) Votos por Zona Eleitoral", reverse = TRUE))+
   scale_fill_distiller(palette = "Blues", direction = 1)+
-  ggtitle("(%) de Votação do PSDB por Zona Eleitoral no 2º turno")+
+  ggtitle("(%) de Votação do PSDB por Zona Eleitoral na Eleição para Prefeito de 2020 na Cidade de SP")+
+  labs(subtitle = " 2º Turno de 2020")+
   annotate("text", x=-46.77, y=-23.63, label="Campo Limpo",
            size=3.45, family = "ITCOfficinaSans LT Book") +
   annotate("text", x=-46.72, y=-23.595, label="Butantã",
@@ -381,11 +440,15 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PSOL" & nr_turno =
   theme_minimal()+
   theme(axis.title = element_blank(),
         panel.grid = element_blank(),
+        rect = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "(%) VOTOS POR ZONA ELEITORAL ",
                              label.position = "left", reverse = TRUE))+
   scale_fill_distiller(palette = "Yellow", direction = 1)+
-  ggtitle("(%) de Votação do PSOL por Zona Eleitoral na Eleição pra Prefeito de 2020")+
+  ggtitle("(%) de Votação do PSOL por Zona Eleitoral na Eleição pra Prefeito de 2020 na Cidade de SP")+
+  labs(subtitle = '2º Turno')+
   annotate("text", x=-46.77, y=-23.63, label="CAMPO LIMPO",
            size=3.45, family = "ITCOfficinaSans LT Book") +
   annotate("text", x=-46.72, y=-23.595, label="BUTANTÃ",
@@ -393,10 +456,7 @@ sp_prefeito %>% filter(ano_eleicao == "2020" & sg_partido == "PSOL" & nr_turno =
   annotate("text", x=-46.7, y=-23.85, label="PARELHEIROS",
            size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")+
   annotate("text", x=-46.67, y=-23.746, label="GRAJAÚ",
-           size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")+
-  annotate("text", x=-46.4, y=-23.605, label="CIDADE TIRADENTES",
-           size=3.45, family = "ITCOfficinaSans LT Book", colour = "Black")
-
+           size=3.45, family = "ITCOfficinaSans LT Book", colour = "White")
 
 # PARTIDO VENCEDOR POR ZONA ELEITORAL NO 2 TURNO
 
@@ -429,8 +489,97 @@ partido_vencedor_2 %>% filter(ano_eleicao == "2020") %>%
         panel.grid = element_blank(),
         plot.title.position = "plot")+
   guides(fill = guide_legend(title = "Partido", reverse = FALSE))+
-  scale_fill_manual(values = c("#009999","#ff6633", "#0040ff", "#e60000"))+
-  ggtitle("Partidos que ganharam as zonas eleitorais")
+  scale_fill_manual(values = c("#1A84DC","#E1DE28"))+
+  ggtitle("Partidos que ganharam as zonas eleitorais no 2º Turno das Eleições para Prefeito na Cidade de SP em 2020")
 
 
+
+
+
+
+
+
+
+
+### VAMOS TENTAR FAZER UM GRÁFICO INTERATIVO COMO NA CRIMINALIDADE
+
+
+
+
+
+
+
+# grafico interativo com GGIRAPH
+
+roubos_delegacia_21 %>% view()
+
+t = roubos_delegacia_21 %>%
+  ggplot(aes()) +
+  geom_sf_interactive(color = 'gray50', size = 0.2, data_id = roubos_delegacia_21$`DP_COD`,
+                      aes(fill = nivel,tooltip = tooltip))+
+  scale_fill_manual(values = c("#770404", "#D90505","#DC5700" ,"#DBB139", '#D9A862', '#D6CEC2'), name = '')+
+  labs(title = "Criminalidade Bairro a Bairro",
+       subtitle = "Roubos de Celulares por Distrito Policial no ano de 2021",
+       caption = 'Fonte: Secretaria de Estado da Segurança Pública de São Paulo')+
+  theme_void() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        plot.background = element_rect(fill = "transparent", colour = NA),
+        plot.title = element_text(hjust = 0.5),
+        plot.caption = element_text(size = 7))
+
+
+tooltip_css = paste0("border-radius: 4px;",
+                     "border: 1px solid gray;",
+                     "background: white;",
+                     "padding: 5px;",
+                     "text-align: center;",
+                     "opactiy: 0.5")
+g = girafe(ggobj =  t,
+           options = list(
+             opts_tooltip(css = tooltip_css),
+             opts_zoom(max = 5),
+             opts_hover_inv(css = "opacity:0.5;"),
+             opts_hover(css = "stroke:red;stroke-width:1.0;")
+           ) )
+
+
+
+
+
+
+g
+
+tooltip = paste("Delegacia:",DP_NOM_C,"\nDP_Num:",DP_COD,"\nN de Roubos:",n)
+
+teste <- sp_prefeito %>% mutate(tooltip = paste("Zona Eleitoral:",nr_zona,"\nPerc de votos:",percentual))
+
+library(ggiraph)
+
+t = teste %>% filter(ano_eleicao == "2020" & sg_partido == "PSDB" & nr_turno == "1") %>%
+  ggplot(aes(geometry = geometry))+
+  geom_sf()+
+  geom_sf_interactive(color = 'gray50', size = 0.2, data_id = teste$nr_zona,
+                      aes(fill = percentual,tooltip = tooltip))+
+  theme_minimal()+
+  theme(axis.title = element_blank(),
+        panel.grid = element_blank(),
+        plot.title.position = "plot")+
+  guides(fill = guide_legend(title = "(%) Votos por Zona Eleitoral ", reverse = TRUE))+
+  scale_fill_distiller(palette = "Blues", direction = 1)
+
+
+tooltip_css = paste0("border-radius: 4px;",
+                     "border: 1px solid gray;",
+                     "background: white;",
+                     "padding: 5px;",
+                     "text-align: center;",
+                     "opactiy: 0.5")
+g = girafe(ggobj =  t,
+           options = list(
+             opts_tooltip(css = tooltip_css),
+             opts_zoom(max = 5),
+             opts_hover_inv(css = "opacity:0.5;"),
+             opts_hover(css = "stroke:red;stroke-width:1.0;")
+           ) )
 
